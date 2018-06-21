@@ -1,0 +1,1 @@
+{"haarcascade_frontalface_alt.xml": 2928, "haarcascade_frontalface_alt2.xml": 3221, "haarcascade_frontalface_default.xml": 2887, "haarcascade_profileface.xml": 1813}
