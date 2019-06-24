@@ -1,10 +1,5 @@
 # Face Quality Enhancement (FQE)
-> 02238-Biometric-Systems
-
-# Basically
-The file `./pythonmess/seven.py` is the final implementation and spits out the file called `./pythonmess/seven.csv`.
-
-Read the entire report here:
+## 02238-Biometric-Systems
 
 # Research papers
 The scope of this project report is:
