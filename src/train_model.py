@@ -28,6 +28,8 @@ from keras.preprocessing.image import img_to_array
 train_files = list(sorted(glob.glob('./data/THU-DorsalFinger/FDT2_Train/*/*.bmp')))
 test_files = list(sorted(glob.glob('./data/THU-DorsalFinger/FDT2_Test/*/*.bmp')))
 
+assert len(train_files) == 610
+
 train_hash = hash(''.join([f[-7:] for f in train_files]))
 test_hash = hash(''.join([f[-7:] for f in test_files]))
 assert test_hash == train_hash
@@ -56,14 +58,14 @@ X_train = np.array(x_train)
 y_train = np.array(y_train)
 X_test = np.array(x_test)
 y_test = np.array(y_test)
-
+# %%
 batch_size = 1
-nb_classes = 610
-nb_epoch = 20
+nb_classes = len(x_test)
+nb_epoch = 1
 # input image dimensions
-img_rows, img_cols = 200, 100
+img_rows, img_cols, _ = x_train[0].shape
 # number of convolutional filters to use
-nb_filters = 32
+nb_filters = 7#32
 # size of pooling area for max pooling
 pool_size = (2, 2)
 # convolution kernel size
