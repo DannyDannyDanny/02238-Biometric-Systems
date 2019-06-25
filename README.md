@@ -25,8 +25,10 @@ Training is based loosely on Keras MNIST example[^mnist].
 | Zhang[^3]   |...|     97%GAR / 0.02%FAR |
 
 
-#### Bib
+
 
 [^1]: Kannala-BSIF-(2012)
 [^2]: Kumar-FK-(2009)
 [^3]: Zhang-FKP-(2009)
+[^data]: [Tsinghua University Finger Vein and Finger Dorsal Texture Database](http://www.sigs.tsinghua.edu.cn/labs/vipl/thu-fvfdt.html)
+[^mnist]: [Keras MNIST Example GitHub](https://github.com/keras-team/keras/blob/master/examples/mnist_cnn.py)
