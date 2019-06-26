@@ -82,6 +82,7 @@ X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 X_train /= 255
 X_test /= 255
+
 print('X_train shape:', X_train.shape)
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
@@ -92,31 +93,164 @@ Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 print('building model')
-model = Sequential()
-model.add(Conv2D(nb_filters, kernel_size[0], kernel_size[1],
-                border_mode='valid',
-                input_shape=input_shape))
-model.add(Activation('relu'))
-model.add(Conv2D(nb_filters, kernel_size[0], kernel_size[1]))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=pool_size))
-model.add(Dropout(0.25))
 
-model.add(Flatten())
-model.add(Dense(128))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
-model.add(Dense(nb_classes))
-model.add(Activation('softmax'))
+#TODO separate activation layers?
+#BatchNormalization layer after each conv layer
+mp_stride = (2,2)
+mp_size = (2,2)
+input_shape
+X_train[0].shape
+
+# %%
+model = Sequential()
+
+if True:
+    #C1
+    model.add(Conv2D(96, (7,7),padding='valid',activation='relu',input_shape=input_shape))
+    # model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=mp_size,strides=mp_stride))
+    #C2
+    model.add(Conv2D(128, (5,5),padding='valid',activation='relu'))
+    # model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=mp_size,strides=mp_stride))
+    #C3
+    model.add(Conv2D(128, (3,3),padding='valid',activation='relu'))
+    # model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=mp_size,strides=mp_stride))
+    #C4
+    model.add(Conv2D(128, (3,3),padding='valid',activation='relu'))
+    # model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=mp_size,strides=mp_stride))
+
+    model.add(Flatten())
+
+    #FC1
+    model.add(Dense(1024, input_shape=(10*3*128,),activation='relu')) #TODO inputshape
+    # model.add(Dropout(0.5))
+
+    #FC2
+    model.add(Dense(512 ,activation='relu')) #TODO inputshape
+
+    #FC- OUTPUT, classification to classes, softmax
+    model.add(Dense(nb_classes))
+    model.add(Activation('softmax'))
+else:
+    #Instantiate an empty model
+    model = Sequential()
+
+    # 1st Convolutional Layer
+    model.add(Conv2D(filters=96, input_shape=input_shape, kernel_size=(11,11), strides=(4,4), padding='valid'))
+    model.add(Activation('relu'))
+    # Max Pooling
+    model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
+    # 2nd Convolutional Layer
+    model.add(Conv2D(filters=256, kernel_size=(11,11), strides=(1,1), padding='valid'))
+    model.add(Activation('relu'))
+    # Max Pooling
+    model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
+    # 3rd Convolutional Layer
+    model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='valid'))
+    model.add(Activation('relu'))
+    # 4th Convolutional Layer
+    model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='valid'))
+    model.add(Activation('relu'))
+    # 5th Convolutional Layer
+    model.add(Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), padding='valid'))
+    model.add(Activation('relu'))
+    # Max Pooling
+    model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
+    # Passing it to a Fully Connected layer
+    model.add(Flatten())
+    # 1st Fully Connected Layer
+    model.add(Dense(4096, input_shape=(224*224*3,)))
+    model.add(Activation('relu'))
+    # Add Dropout to prevent overfitting
+    model.add(Dropout(0.4))
+    # 2nd Fully Connected Layer
+    model.add(Dense(4096))
+    model.add(Activation('relu'))
+    # Add Dropout
+    model.add(Dropout(0.4))
+    # 3rd Fully Connected Layer
+    model.add(Dense(1000))
+    model.add(Activation('relu'))
+    # Add Dropout
+    model.add(Dropout(0.4))
+    # Output Layer
+    model.add(Dense(17))
+    model.add(Activation('softmax'))
+
+
+# Compile the model
+# model.compile(loss=keras.losses.categorical_crossentropy, optimizer='adam', metrics=[“accuracy”])
+print('model summary:')
+model.summary()
+# %%
+
 
 print('compling model')
-model.compile(loss='categorical_crossentropy',
-        optimizer='sgd',
+
+sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
+
+model.compile(loss=keras.losses.categorical_crossentropy,
+        # optimizer = 'adam',
+        optimizer = 'sgd',
         metrics=['accuracy'])
 
 print('training model')
-model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(X_test, Y_test))
+# model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(X_test, Y_test))
+
+# %%
+from skimage import exposure
+
+def AHE(img):
+    img_adapteq = exposure.equalize_adapthist(img, clip_limit=0.03)
+    return img_adapteq
+datagen = ImageDataGenerator(rotation_range=30, horizontal_flip=0.5, preprocessing_function=AHE)
+
+print('Using real-time data augmentation.')
+# This will do preprocessing and realtime data augmentation:
+datagen = ImageDataGenerator(
+    featurewise_center=False,  # set input mean to 0 over the dataset
+    samplewise_center=False,  # set each sample mean to 0
+    featurewise_std_normalization=False,  # divide inputs by std of the dataset
+    samplewise_std_normalization=False,  # divide each input by its std
+    zca_whitening=False,  # apply ZCA whitening
+    zca_epsilon=1e-06,  # epsilon for ZCA whitening
+    rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+    # randomly shift images horizontally (fraction of total width)
+    width_shift_range=0.1,
+    # randomly shift images vertically (fraction of total height)
+    height_shift_range=0.1,
+    shear_range=0.,  # set range for random shear
+    zoom_range=0.,  # set range for random zoom
+    channel_shift_range=0.,  # set range for random channel shifts
+    # set mode for filling points outside the input boundaries
+    fill_mode='nearest',
+    cval=0.,  # value used for fill_mode = "constant"
+    horizontal_flip=True,  # randomly flip images
+    vertical_flip=False,  # randomly flip images
+    # set rescaling factor (applied before any other transformation)
+    rescale=None,
+    # set function that will be applied on each input
+    preprocessing_function=None,
+    # image data format, either "channels_first" or "channels_last"
+    data_format=None,
+    # fraction of images reserved for validation (strictly between 0 and 1)
+    validation_split=0.0)
+
+datagen.fit(X_train)
+# %%
+
+
+# model.fit(X_train, Y_train, batch_size=20, epochs=50, verbose=1, validation_data=(X_test, Y_test))
+model.fit_generator(
+    datagen.flow(X_train, Y_train, batch_size=20),
+    steps_per_epoch=X_train.shape[0]/10,
+    epochs=10, verbose=1, validation_data=(X_test, Y_test))
+
 print('evaluating model')
 score = model.evaluate(X_test, Y_test, verbose=0)
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
+os.system( "say beep" )
