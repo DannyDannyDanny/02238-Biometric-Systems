@@ -24,26 +24,15 @@ train_hash = hash(''.join([f[-7:] for f in train_files]))
 test_hash = hash(''.join([f[-7:] for f in test_files]))
 assert test_hash == train_hash
 
-x_train = []
-y_train = []
-x_test = []
-y_test = []
+pairs = []
 
 for file_train,file_test in zip(train_files,test_files):
-    # print(file_train)
-    # print(file_test)
     subject_id = int(file_test.split('/')[-2])
-
     img_train = load_img(file_train,color_mode = "grayscale")
     arr_train = img_to_array(img_train)
-
     img_test = load_img(file_test,color_mode = "grayscale")
     arr_test = img_to_array(img_test)
-
-    x_train.append(arr_train)
-    y_train.append(subject_id)
-    x_test.append(arr_test)
-    y_test.append(subject_id)
+    pair.append((arr_test,arr_train))
 
 # %% ---- ABOVE BEEN COPIED
 
@@ -62,8 +51,6 @@ type(x_train1)
 x_train1.shape
 x_train[0].shape
 #model.add(Conv2D(32, (3, 3), padding='same',input_shape=x_train.shape[1:]))
-
-
 
 type(x_train)
 print('x_train shape:', x_train.shape)
