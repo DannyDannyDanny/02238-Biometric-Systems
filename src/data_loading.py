@@ -30,5 +30,5 @@ def get_pairs():
         arr_train = img_to_array(img_train)
         img_test = load_img(file_test,color_mode = "grayscale")
         arr_test = img_to_array(img_test)
-        pair.append((arr_test,arr_train))
+        pairs.append((arr_test,arr_train))
     return pairs
