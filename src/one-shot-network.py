@@ -63,8 +63,8 @@ encoded_l = convnet(left_input)
 encoded_r = convnet(right_input)
 #merge two encoded inputs with the l1 distance between them
 L1_distance = lambda x: K.abs(x[0]-x[1])
-both = merge([encoded_l,encoded_r], mode = L1_distance,output_shape=lambda x: x[0])
-model_concat = concatenate([modela, modelb],mode=L1=distance, output_shape=lambda x: x[0])
+# both = merge([encoded_l,encoded_r], mode = L1_distance,output_shape=lambda x: x[0])
+both = keras.layers.Concatenate(axis=-1)([modela, modelb],mode=L1_distance, output_shape=lambda x: x[0])
 
 prediction = Dense(1,activation='sigmoid',bias_initializer=b_init)(both)
 siamese_net = Model(input=[left_input,right_input],output=prediction)
