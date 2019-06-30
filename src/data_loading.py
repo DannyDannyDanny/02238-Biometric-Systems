@@ -28,9 +28,11 @@ def get_pairs():
     for file_train,file_test in zip(train_files,test_files):
         subject_id = int(file_test.split('/')[-2])
         img_train = load_img(file_train,color_mode = "grayscale")
-        arr_train = np.squeeze((img_to_array(img_train)))
+        # arr_train = np.squeeze((img_to_array(img_train)))
+        arr_train = (img_to_array(img_train))
         img_test = load_img(file_test,color_mode = "grayscale")
-        arr_test = np.squeeze((img_to_array(img_test)))
+        # arr_test = np.squeeze((img_to_array(img_test)))
+        arr_test = (img_to_array(img_test))
         pairs.append([arr_test,arr_train])
     return pairs
 
@@ -66,6 +68,6 @@ def get_x_y():
 
     len(class_pairs)
     class_pairs[0][0]
-    data_y = np.array([y for y,x in class_pairs])
+    data_y = np.array([[y] for y,x in class_pairs])
     data_x = np.array([x for y,x in class_pairs])
     return data_x,data_y
