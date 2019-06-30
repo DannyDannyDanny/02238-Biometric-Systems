@@ -94,6 +94,27 @@ tr_pairs, tr_y = create_pairs(x_train, digit_indices)
 digit_indices = [np.where(y_test == i)[0] for i in range(num_classes)]
 te_pairs, te_y = create_pairs(x_test, digit_indices)
 
+# two images of 28x28
+tr_pairs[0].shape
+# are they the same
+tr_y[0]
+
+
+# %%
+from src.data_loading import get_pairs
+
+all_pairs = get_pairs()
+
+
+
+len(pairs)
+
+sum(tr_y)
+len(tr_y)-sum(tr_y)
+
+sum(te_y)
+len(te_y)-sum(te_y)
+
 # network definition
 base_network = create_base_network(input_shape)
 
