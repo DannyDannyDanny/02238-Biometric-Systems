@@ -15,6 +15,11 @@ from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
 from skimage import exposure
 
+import json
+def data_to_file(fname,data):
+    data_json = json.dumps(data)
+    with open(fname+".json", "w") as json_file:
+        json_file.write(data_json)
 
 # %% dataprep
 def get_pairs(squeeze=False):
