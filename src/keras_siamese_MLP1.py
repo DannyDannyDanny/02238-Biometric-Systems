@@ -5,6 +5,7 @@ import numpy as np
 import random
 from keras.datasets import mnist
 from keras.models import Model
+from keras.layers import Input, Conv2D, Lambda, merge, Dense, Flatten,MaxPooling2D
 from keras.layers import Input, Flatten, Dense, Dropout, Lambda
 from keras.optimizers import RMSprop
 from keras import backend as K
@@ -56,18 +57,7 @@ def create_base_network(input_shape):
     '''Base network to be shared (eq. to feature extraction).
     '''
     input = Input(shape=input_shape)
-    x = Flatten()(input)
-    x = Dense(128, activation='relu')(x)
-    x = Dropout(0.1)(x)
-    x = Dense(128, activation='relu')(x)
-    x = Dropout(0.1)(x)
-    x = Dense(128, activation='relu')(x)
-    return Model(input, x)
-
-def create_base_network(input_shape):
-    '''Base network to be shared (eq. to feature extraction).
-    '''
-    input = Input(shape=input_shape)
+    x = Conv2D(64, kernel_size=3, activation='relu', input_shape=input_shape)(input)
     x = Flatten()(input)
     x = Dense(128, activation='relu')(x)
     x = Dropout(0.1)(x)
@@ -112,7 +102,6 @@ def get_MLP_model():
     model = Model([input_a, input_b], distance)
     return model
 
-
 model = get_MLP_model()
 
 rms = RMSprop()
@@ -120,10 +109,32 @@ rms = RMSprop()
 model.summary()
 
 model.compile(loss=contrastive_loss, optimizer=rms, metrics=[accuracy])
-model.fit([tr_pairs[:, 0], tr_pairs[:, 1]], tr_y,
-          batch_size=128,
-          epochs=40,#epochs,
+history = model.fit([tr_pairs[:, 0], tr_pairs[:, 1]], tr_y,
+          batch_size=32,
+          epochs=25,#epochs,
           validation_data=([te_pairs[:, 0], te_pairs[:, 1]], te_y),verbose=1)
+
+print(history.history.keys())
+
+# %%
+import matplotlib.pyplot as plt
+# %%
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+# %% summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+# %%
 
 # compute final accuracy on training and test sets
 y_pred = model.predict([tr_pairs[:, 0], tr_pairs[:, 1]])
@@ -133,10 +144,7 @@ te_acc = compute_accuracy(te_y, y_pred)
 
 print('* Accuracy on training set: %0.2f%%' % (100 * tr_acc))
 print('* Accuracy on test set: %0.2f%%' % (100 * te_acc))
-!say attention! attention! training has completed! yeet yeet yeet yeet!
+!say attention! attention! training has completed!
 
 # # %%
-model_json = model.to_json()
-note = 'MLP1_class_balance'
-with open(note+"model"+str(te_acc)[:5]+'_'+str(te_acc)[:5]+".json", "w") as json_file:
-    json_file.write(model_json)
+type(history.history)
