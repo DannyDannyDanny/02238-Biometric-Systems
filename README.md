@@ -2,9 +2,14 @@
 ## 02238-Biometric-Systems
 
 
+
 ### Data
 
 The dataset, THU-FVFDT2[^data] contains Region-of-Interest (ROI) images of finger dorsal texture from 610 different subjects. A subject's sample consists of two normalized images of the same ROI - taken separately and normalized to 200x100 pixels. The first 390 subjects are sampled within 3-7 days. The remaining 220 subjects are sampled within approximately half a minute.[^data]
+
+### Pre-processing
+* [histogram equalization](https://scikit-image.org/docs/dev/auto_examples/color_exposure/plot_equalize.html)
+
 
 ### Training
 Training is based loosely on Keras MNIST example[^mnist].
