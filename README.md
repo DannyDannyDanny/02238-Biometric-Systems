@@ -1,5 +1,6 @@
 # Finger Knuckle Print (FKP)
 ## 02238-Biometric-Systems
+[Assignment Link](https://www.overleaf.com/project/5d1c6d1d5f279e0d54109a2d)
 
 ### Paper formalities
 * [Paper Submission Instructions](https://fg-biosig.gi.de/biosig-2019/paper-submission.html)
