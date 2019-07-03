@@ -237,25 +237,29 @@ def get_siamese_model(input_shape):
 # model.summary()
 #
 #
-# # %% train
-input_shape = (200,100,1)
+
+len(tr_y)
+sum([i[0] for i in tr_y])
+
 model = get_siamese_model(input_shape)
 model.summary()
+# # %% train
+
 rms = RMSprop()
-model.compile(optimizer='adam')
-# model.compile(loss=contrastive_loss, optimizer=rms, metrics=[accuracy])
+model.compile(loss=contrastive_loss, optimizer=rms, metrics=[accuracy])
+# %%
 model.fit([tr_pairs[:, 0], tr_pairs[:, 1]], tr_y,
-          batch_size=128,
-          epochs=epochs,
+          batch_size= 64,# 128,
+          epochs= 10,#epochs,
           validation_data=([te_pairs[:, 0], te_pairs[:, 1]], te_y))
 
-
+# %% results
 # compute final accuracy on training and test sets
 y_pred = model.predict([tr_pairs[:, 0], tr_pairs[:, 1]])
 tr_acc = compute_accuracy(tr_y, y_pred)
 y_pred = model.predict([te_pairs[:, 0], te_pairs[:, 1]])
 te_acc = compute_accuracy(te_y, y_pred)
 
-
 print('* Accuracy on training set: %0.2f%%' % (100 * tr_acc))
 print('* Accuracy on test set: %0.2f%%' % (100 * te_acc))
+!say attention! attention! training has completed! yeet yeet yeet yeet!
