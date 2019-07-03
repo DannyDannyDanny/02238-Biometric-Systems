@@ -92,13 +92,13 @@ def get_x_y(ttr=0.2,squeeze=False,v=0):
     tr_pairs = ymatch[:tts] + nmatch[:tts]
     r.shuffle(te_pairs)
     r.shuffle(tr_pairs)
-
+    # THESE NAMES ARE INCORRECT
     te_x = np.array([x for y,x in te_pairs])
     tr_x = np.array([x for y,x in tr_pairs])
     te_y = np.array([y for y,x in te_pairs])
     tr_y = np.array([y for y,x in tr_pairs])
-
-    return te_x, tr_x, te_y, tr_y
+    # TEST AND TRAIN HAVE BEEN HOTSWAPPED
+    return tr_x, te_x, tr_y, te_y
     # return data_x,data_y
 
 # %%
