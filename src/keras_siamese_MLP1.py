@@ -59,7 +59,7 @@ def create_base_network(input_shape):
     input = Input(shape=input_shape)
     x = Conv2D(64, kernel_size=3, activation='relu', input_shape=input_shape)(input)
     x = Flatten()(input)
-    x = Dense(128, activation='relu')(x)
+    x = Dense(2048, activation='relu')(x)
     x = Dropout(0.1)(x)
     x = Dense(128, activation='relu')(x)
     x = Dropout(0.1)(x)
@@ -111,7 +111,7 @@ model.summary()
 model.compile(loss=contrastive_loss, optimizer=rms, metrics=[accuracy])
 history = model.fit([tr_pairs[:, 0], tr_pairs[:, 1]], tr_y,
           batch_size=32,
-          epochs=25,#epochs,
+          epochs=100,#epochs,
           validation_data=([te_pairs[:, 0], te_pairs[:, 1]], te_y),verbose=1)
 
 print(history.history.keys())
